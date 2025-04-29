@@ -10,7 +10,7 @@ paths:
   /receive_request:
     post:
       operationId: receiveGAPMarketRequest
-      summary: Trigger GAP Market Analysis
+      summary: Trigger GAP Market Analysis with multiple files
       requestBody:
         required: true
         content:
@@ -20,15 +20,22 @@ paths:
               properties:
                 session_id:
                   type: string
-                file_url:
-                  type: string
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
                 source:
                   type: string
                 next_action_webhook:
                   type: string
               required:
                 - session_id
-                - file_url
+                - files
                 - next_action_webhook
       responses:
         '200':
