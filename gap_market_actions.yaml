@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: GAP Market Analysis API
+  version: 1.0.0
+paths:
+  /receive_request:
+    post:
+      operationId: receiveGAPMarketRequest
+      summary: Trigger GAP Market Analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                file_url:
+                  type: string
+                source:
+                  type: string
+                next_action_webhook:
+                  type: string
+              required:
+                - session_id
+                - file_url
+                - next_action_webhook
+      responses:
+        '200':
+          description: Request accepted
+
+  /send_result:
+    post:
+      operationId: sendGAPMarketResult
+      summary: Submit GAP Analysis Market results
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                file_name:
+                  type: string
+                file_url:
+                  type: string
+                file_2_name:
+                  type: string
+                file_2_url:
+                  type: string
+                status:
+                  type: string
+              required:
+                - session_id
+                - file_name
+                - file_url
+                - status
+      responses:
+        '200':
+          description: Result posted successfully
