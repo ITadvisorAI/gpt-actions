@@ -1,0 +1,85 @@
+openapi: 3.1.0
+info:
+  title: IT Assessment API
+  version: 1.0.0
+
+servers:
+  - url: https://dummy.itassessment.api
+
+paths:
+  /receive_request:
+    post:
+      operationId: receiveAssessmentRequest
+      summary: Trigger IT Infrastructure Assessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [it_assessment]
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                    required:
+                      - file_name
+                      - file_url
+                source:
+                  type: string
+                next_action_webhook:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - files
+                - next_action_webhook
+      responses:
+        "200":
+          description: Assessment request accepted
+
+  /send_result:
+    post:
+      operationId: sendAssessmentResult
+      summary: Return Updated GAP Working File and Assessment Deck
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [it_assessment]
+                file_name:
+                  type: string
+                file_url:
+                  type: string
+                file_2_name:
+                  type: string
+                file_2_url:
+                  type: string
+                status:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - file_name
+                - file_url
+                - status
+      responses:
+        "200":
+          description: Assessment deliverables submitted
