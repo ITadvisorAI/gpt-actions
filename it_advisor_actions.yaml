@@ -1,0 +1,81 @@
+openapi: 3.1.0
+info:
+  title: IT Transformation Advisor API
+  version: 1.0.0
+
+servers:
+  - url: https://dummy.itadvisor.api
+
+paths:
+  /receive_request:
+    post:
+      operationId: receiveAdvisorRequest
+      summary: Begin user session, collect file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [it_advisor]
+                user_email:
+                  type: string
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                    required:
+                      - file_name
+                      - file_url
+                status:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - user_email
+                - files
+      responses:
+        "200":
+          description: User session started
+
+  /send_result:
+    post:
+      operationId: sendAdvisorBundle
+      summary: Return final transformation bundle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [it_advisor]
+                file_name:
+                  type: string
+                file_url:
+                  type: string
+                status:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - file_name
+                - file_url
+                - status
+      responses:
+        "200":
+          description: Bundle sent successfully
