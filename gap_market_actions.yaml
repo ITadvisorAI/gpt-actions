@@ -1,7 +1,8 @@
 openapi: 3.1.0
 info:
   title: GAP Market Analysis API
-  version: 1.1.0
+  version: 1.0.0
+
 servers:
   - url: https://dummy.gapmarket.api
 
@@ -19,6 +20,9 @@ paths:
               properties:
                 session_id:
                   type: string
+                gpt_module:
+                  type: string
+                  enum: [gap_market]
                 files:
                   type: array
                   items:
@@ -37,11 +41,12 @@ paths:
                   type: string
               required:
                 - session_id
+                - gpt_module
                 - files
                 - next_action_webhook
       responses:
         "200":
-          description: Request accepted
+          description: Market GAP request received
 
   /send_result:
     post:
@@ -56,6 +61,9 @@ paths:
               properties:
                 session_id:
                   type: string
+                gpt_module:
+                  type: string
+                  enum: [gap_market]
                 file_name:
                   type: string
                 file_url:
@@ -68,9 +76,10 @@ paths:
                   type: string
               required:
                 - session_id
+                - gpt_module
                 - file_name
                 - file_url
                 - status
       responses:
         "200":
-          description: Result posted successfully
+          description: Market GAP result posted successfully
