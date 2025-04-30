@@ -1,0 +1,85 @@
+openapi: 3.1.0
+info:
+  title: GAP Analysis Target API
+  version: 1.0.0
+
+servers:
+  - url: https://dummy.gaptarget.api
+
+paths:
+  /receive_request:
+    post:
+      operationId: receiveGapTargetRequest
+      summary: Trigger GAP Target Analysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [gap_target]
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                    required:
+                      - file_name
+                      - file_url
+                source:
+                  type: string
+                next_action_webhook:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - files
+                - next_action_webhook
+      responses:
+        "200":
+          description: GAP Target analysis request accepted
+
+  /send_result:
+    post:
+      operationId: sendGapTargetResult
+      summary: Send GAP Target Analysis Deliverables
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum: [gap_target]
+                file_name:
+                  type: string
+                file_url:
+                  type: string
+                file_2_name:
+                  type: string
+                file_2_url:
+                  type: string
+                status:
+                  type: string
+              required:
+                - session_id
+                - gpt_module
+                - file_name
+                - file_url
+                - status
+      responses:
+        "200":
+          description: Result files received
