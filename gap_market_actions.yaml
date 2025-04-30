@@ -1,8 +1,7 @@
 openapi: 3.1.0
 info:
   title: GAP Market Analysis API
-  version: 1.0.0
-
+  version: 1.1.0
 servers:
   - url: https://dummy.gapmarket.api
 
@@ -10,7 +9,7 @@ paths:
   /receive_request:
     post:
       operationId: receiveGAPMarketRequest
-      summary: Trigger GAP Market Analysis with multiple files
+      summary: Trigger GAP Market Analysis
       requestBody:
         required: true
         content:
@@ -29,6 +28,9 @@ paths:
                         type: string
                       file_url:
                         type: string
+                    required:
+                      - file_name
+                      - file_url
                 source:
                   type: string
                 next_action_webhook:
@@ -38,7 +40,7 @@ paths:
                 - files
                 - next_action_webhook
       responses:
-        '200':
+        "200":
           description: Request accepted
 
   /send_result:
@@ -70,5 +72,5 @@ paths:
                 - file_url
                 - status
       responses:
-        '200':
+        "200":
           description: Result posted successfully
