@@ -1,16 +1,16 @@
 openapi: 3.1.0
 info:
-  title: Transformation Roadmap API
-  version: 1.0.0
+  title: GPT Orchestration API
+  version: 1.0.1
 
 servers:
-  - url: https://dummy.roadmap.api
+  - url: https://dummy.gapmarket.api
 
 paths:
   /receive_request:
     post:
-      operationId: receiveRoadmapRequest
-      summary: Trigger Roadmap Generation
+      operationId: receiveGPTRequest
+      summary: Trigger a GPT module task
       requestBody:
         required: true
         content:
@@ -22,7 +22,7 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [roadmap]
+                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
                 files:
                   type: array
                   items:
@@ -46,12 +46,12 @@ paths:
                 - next_action_webhook
       responses:
         "200":
-          description: Roadmap request accepted
+          description: GPT request received
 
   /send_result:
     post:
-      operationId: sendRoadmapResult
-      summary: Return Roadmap Deliverables
+      operationId: sendGPTResult
+      summary: Submit GPT module result
       requestBody:
         required: true
         content:
@@ -63,7 +63,7 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [roadmap]
+                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
                 file_name:
                   type: string
                 file_url:
@@ -82,4 +82,35 @@ paths:
                 - status
       responses:
         "200":
-          description: Roadmap result received
+          description: GPT result posted successfully
+
+  /notify_zip_delivery:
+    post:
+      operationId: notifyZipDelivery
+      summary: Notify user of ZIP delivery and end of session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                zip_url:
+                  type: string
+              required:
+                - session_id
+                - zip_url
+      responses:
+        "200":
+          description: ZIP delivery notification sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: >-
+                      Please find the link to download your IT Transformation reports. This session has now ended and the Google Drive along with all the reports that you uploaded and were generated have been deleted. A copy of this zipped file has been emailed to you also. In case you have any questions on the reports, request you to please upload the report files in this chat for me to review and provide insights.
