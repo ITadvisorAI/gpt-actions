@@ -22,7 +22,7 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
+                   enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
                 files:
                   type: array
                   items:
