@@ -4,7 +4,7 @@ info:
   version: 1.0.1
 
 servers:
-  - url: https://dummy.gapmarket.api
+  - url: https://gpt-api-server-7wu8.onrender.com
 
 paths:
   /receive_request:
@@ -47,6 +47,13 @@ paths:
       responses:
         "200":
           description: GPT request received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /send_result:
     post:
@@ -83,6 +90,13 @@ paths:
       responses:
         "200":
           description: GPT result posted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /notify_zip_delivery:
     post:
