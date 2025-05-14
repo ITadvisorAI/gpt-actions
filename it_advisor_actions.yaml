@@ -22,7 +22,15 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                   enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
+                  enum:
+                    - it_advisor
+                    - it_assessment
+                    - gap_market
+                    - it_strategy
+                    - gap_target
+                    - it_compliance
+                    - roadmap
+                    - it_financials
                 files:
                   type: array
                   items:
@@ -70,7 +78,14 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
+                  enum:
+                    - gap_market
+                    - assessment
+                    - strategy
+                    - gap_target
+                    - compliance
+                    - roadmap
+                    - financials
                 file_name:
                   type: string
                 file_url:
@@ -126,5 +141,5 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: >-
+                    example: >
                       Please find the link to download your IT Transformation reports. This session has now ended and the Google Drive along with all the reports that you uploaded and were generated have been deleted. A copy of this zipped file has been emailed to you also. In case you have any questions on the reports, request you to please upload the report files in this chat for me to review and provide insights.
