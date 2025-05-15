@@ -1,0 +1,68 @@
+openapi: 3.1.0
+info:
+  title: Generate Intake Document
+  version: 1.0.0
+servers:
+  - url: https://docx-generator-api.onrender.com
+
+paths:
+  /generate_intake:
+    post:
+      operationId: generateIntakeDoc
+      summary: Generate intake_<session_id>.docx using template
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                email:
+                  type: string
+                intake_answers:
+                  type: object
+                  properties:
+                    selected_categories:
+                      type: array
+                      items:
+                        type: string
+                    selected_programs:
+                      type: object
+                    q1:
+                      type: string
+                    q2:
+                      type: string
+                    q3:
+                      type: string
+                    q4:
+                      type: string
+                    q5:
+                      type: string
+                  required:
+                    - selected_categories
+                    - selected_programs
+                    - q1
+                    - q2
+                    - q3
+                    - q4
+                    - q5
+              required:
+                - session_id
+                - email
+                - intake_answers
+      responses:
+        '200':
+          description: DOCX file URL returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  session_id:
+                    type: string
+                  file_name:
+                    type: string
+                  file_url:
+                    type: string
