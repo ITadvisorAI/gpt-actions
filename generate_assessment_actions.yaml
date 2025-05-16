@@ -1,7 +1,10 @@
 openapi: 3.1.0
 info:
-  title: Generate Assessment Report
-  version: 1.0.0
+  title: Generate IT Assessment Reports
+  version: 1.1.0
+  description: >
+    This API generates a DOCX and PPTX summary based on IT assessment data
+    including infrastructure scoring, modernization readiness, and executive insights.
 
 servers:
   - url: https://docx-generator-api.onrender.com
@@ -10,7 +13,7 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentDoc
-      summary: Generate assessment_<session_id>.docx and assessment_<session_id>.pptx
+      summary: Generate IT_Current_Status_Assessment_<session_id>.docx and IT_Infrastructure_Assessment_Executive_Summary_<session_id>.pptx
       requestBody:
         required: true
         content:
@@ -20,19 +23,23 @@ paths:
               properties:
                 session_id:
                   type: string
+                  description: Session identifier used for file naming and storage
                 score_summary:
                   type: string
+                  description: Summary of scoring results from the gap analysis (e.g., tier distribution, readiness scores)
                 recommendations:
                   type: string
+                  description: Recommendations for modernization based on analysis (e.g., replace obsolete, cloudify, consolidate)
                 key_findings:
                   type: string
+                  description: Optional executive findings (e.g., top concerns, infrastructure risks, standout systems)
               required:
                 - session_id
                 - score_summary
                 - recommendations
       responses:
         "200":
-          description: Assessment files successfully generated
+          description: Assessment DOCX and PPTX files successfully generated
           content:
             application/json:
               schema:
@@ -40,5 +47,7 @@ paths:
                 properties:
                   docx_url:
                     type: string
+                    description: Public URL to download the IT_Current_Status_Assessment_<session_id>.docx
                   pptx_url:
                     type: string
+                    description: Public URL to download the IT_Infrastructure_Assessment_Executive_Summary_<session_id>.pptx
