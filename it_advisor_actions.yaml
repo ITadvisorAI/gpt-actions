@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API - IT Advisor
-  version: 1.1.1
+  version: 1.1.2
 
 servers:
   - url: https://hook.us2.make.com/1ivi9q9x6l253tikb557hemgtl7n2bv9
@@ -21,12 +21,11 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: User's email address
               required:
                 - email
       responses:
         "200":
-          description: Session ID and folder created
+          description: Session started successfully
           content:
             application/json:
               schema:
@@ -73,7 +72,6 @@ paths:
                         format: uri
                       type:
                         type: string
-                        example: asset_inventory
                     required:
                       - file_name
                       - file_url
@@ -138,7 +136,6 @@ paths:
                   example: complete
                 message:
                   type: string
-                  description: Optional error or status message
               required:
                 - session_id
                 - gpt_module
