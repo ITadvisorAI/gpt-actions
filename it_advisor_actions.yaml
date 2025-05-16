@@ -1,16 +1,16 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API - IT Advisor
-  version: 1.1.2
+  version: 1.1.3
 
 servers:
-  - url: https://hook.us2.make.com/1ivi9q9x6l253tikb557hemgtl7n2bv9
+  - url: https://docx-generator-api.onrender.com  # ✅ Updated to point to your Flask app
 
 paths:
   /start_session:
     post:
       operationId: startSession
-      summary: Start session by sending user email to Make.com webhook
+      summary: Start session by sending user email via Flask proxy to Make.com
       requestBody:
         required: true
         content:
@@ -31,8 +31,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  session_id:
-                    type: string
                   message:
                     type: string
 
