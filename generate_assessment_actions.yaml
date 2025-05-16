@@ -1,42 +1,44 @@
-actions:
-  - name: generate_assessment_doc
-    description: Generate a DOCX assessment report
-    inputs:
-      - name: session_id
-        type: string
-      - name: score_summary
-        type: string
-      - name: recommendations
-        type: string
-    steps:
-      - type: http
-        method: POST
-        url: https://docx-generator-api.onrender.com/generate
-        body:
-          session_id: "${session_id}"
-          template_name: "assessment_template.docx"
-          variables:
-            summary: "${score_summary}"
-            recommendations: "${recommendations}"
-        response:
-          name: doc_response
+openapi: 3.1.0
+info:
+  title: Generate Assessment Report
+  version: 1.0.0
 
-  - name: generate_assessment_ppt
-    description: Generate a PowerPoint assessment presentation
-    inputs:
-      - name: session_id
-        type: string
-      - name: key_findings
-        type: string
-        required: false
-    steps:
-      - type: http
-        method: POST
-        url: https://docx-generator-api.onrender.com/generate
-        body:
-          session_id: "${session_id}"
-          template_name: "assessment_template.pptx"
-          variables:
-            findings: "${key_findings}"
-        response:
-          name: ppt_response
+servers:
+  - url: https://docx-generator-api.onrender.com
+
+paths:
+  /generate_assessment:
+    post:
+      operationId: generateAssessmentDoc
+      summary: Generate assessment_<session_id>.docx and assessment_<session_id>.pptx
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                score_summary:
+                  type: string
+                recommendations:
+                  type: string
+                key_findings:
+                  type: string
+              required:
+                - session_id
+                - score_summary
+                - recommendations
+      responses:
+        "200":
+          description: Assessment files successfully generated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  docx_url:
+                    type: string
+                  pptx_url:
+                    type: string
