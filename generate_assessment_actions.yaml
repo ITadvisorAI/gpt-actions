@@ -1,0 +1,42 @@
+actions:
+  - name: generate_assessment_doc
+    description: Generate a DOCX assessment report
+    inputs:
+      - name: session_id
+        type: string
+      - name: score_summary
+        type: string
+      - name: recommendations
+        type: string
+    steps:
+      - type: http
+        method: POST
+        url: https://docx-generator-api.onrender.com/generate
+        body:
+          session_id: "${session_id}"
+          template_name: "assessment_template.docx"
+          variables:
+            summary: "${score_summary}"
+            recommendations: "${recommendations}"
+        response:
+          name: doc_response
+
+  - name: generate_assessment_ppt
+    description: Generate a PowerPoint assessment presentation
+    inputs:
+      - name: session_id
+        type: string
+      - name: key_findings
+        type: string
+        required: false
+    steps:
+      - type: http
+        method: POST
+        url: https://docx-generator-api.onrender.com/generate
+        body:
+          session_id: "${session_id}"
+          template_name: "assessment_template.pptx"
+          variables:
+            findings: "${key_findings}"
+        response:
+          name: ppt_response
