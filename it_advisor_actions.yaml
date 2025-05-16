@@ -1,16 +1,16 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API - IT Advisor
-  version: 1.1.0
+  version: 1.1.1
 
 servers:
-  - url: https://gpt-api-server-7wu8.onrender.com
+  - url: https://hook.us2.make.com/1ivi9q9x6l253tikb557hemgtl7n2bv9
 
 paths:
   /start_session:
     post:
       operationId: startSession
-      summary: Initiate session creation using user email
+      summary: Start session by sending user email to Make.com webhook
       requestBody:
         required: true
         content:
@@ -32,9 +32,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
-                    type: string
                   session_id:
+                    type: string
+                  message:
                     type: string
 
   /receive_request:
@@ -50,7 +50,6 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: Generated session ID
                 gpt_module:
                   type: string
                   enum:
@@ -64,17 +63,14 @@ paths:
                     - it_financials
                 files:
                   type: array
-                  description: Files uploaded for analysis
                   items:
                     type: object
                     properties:
                       file_name:
                         type: string
-                        description: Name of the file
                       file_url:
                         type: string
                         format: uri
-                        description: Public file URL
                       type:
                         type: string
                         example: asset_inventory
