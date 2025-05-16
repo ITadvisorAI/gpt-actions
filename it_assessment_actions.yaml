@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API
-  version: 1.0.1
+  version: 1.1.0
 
 servers:
   - url: https://gpt-api-server-7wu8.onrender.com
@@ -20,9 +20,11 @@ paths:
               properties:
                 session_id:
                   type: string
+                email:
+                  type: string
                 gpt_module:
                   type: string
-                   enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
+                  enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
                 files:
                   type: array
                   items:
@@ -32,15 +34,20 @@ paths:
                         type: string
                       file_url:
                         type: string
+                      type:
+                        type: string
+                        example: asset_inventory
                     required:
                       - file_name
                       - file_url
+                      - type
                 source:
                   type: string
                 next_action_webhook:
                   type: string
               required:
                 - session_id
+                - email
                 - gpt_module
                 - files
                 - next_action_webhook
@@ -70,7 +77,7 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
+                  enum: [it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
                 file_name:
                   type: string
                 file_url:
@@ -81,6 +88,9 @@ paths:
                   type: string
                 status:
                   type: string
+                message:
+                  type: string
+                  example: Missing asset inventory file for assessment
               required:
                 - session_id
                 - gpt_module
