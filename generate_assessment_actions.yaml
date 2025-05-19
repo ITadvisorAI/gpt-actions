@@ -13,7 +13,7 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentDoc
-      summary: Generate IT_Current_Status_Assessment_<session_id>.docx and IT_Infrastructure_Assessment_Executive_Summary_<session_id>.pptx
+      summary: Generate assessment report and executive summary presentation
       requestBody:
         required: true
         content:
@@ -24,15 +24,19 @@ paths:
                 session_id:
                   type: string
                   description: Session identifier used for file naming and storage
+                  example: Temp_20250519_abc@example.com
                 score_summary:
                   type: string
                   description: Summary of scoring results from the gap analysis (e.g., tier distribution, readiness scores)
+                  example: "25% Excellent, 45% Standard, 30% Obsolete"
                 recommendations:
                   type: string
-                  description: Recommendations for modernization based on analysis (e.g., replace obsolete, cloudify, consolidate)
+                  description: Recommendations for modernization (e.g., upgrade obsolete, migrate to cloud)
+                  example: "Replace 60% of obsolete servers; consolidate Tier 2 data centers"
                 key_findings:
                   type: string
-                  description: Optional executive findings (e.g., top concerns, infrastructure risks, standout systems)
+                  description: Optional executive-level insights
+                  example: "Legacy ERP servers show critical performance issues under load."
               required:
                 - session_id
                 - score_summary
@@ -47,7 +51,7 @@ paths:
                 properties:
                   docx_url:
                     type: string
-                    description: Public URL to download the IT_Current_Status_Assessment_<session_id>.docx
+                    description: Public URL to download the assessment DOCX
                   pptx_url:
                     type: string
-                    description: Public URL to download the IT_Infrastructure_Assessment_Executive_Summary_<session_id>.pptx
+                    description: Public URL to download the executive summary PPTX
