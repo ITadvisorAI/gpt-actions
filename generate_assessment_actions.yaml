@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.1.0
+  version: 1.2.0
   description: >
-    This API generates a DOCX and PPTX summary based on IT assessment data
-    including infrastructure scoring, modernization readiness, and executive insights.
+    This API generates a DOCX report and PPTX executive summary for an IT assessment session.
+    The output is based on tier distribution, modernization recommendations, and summary insights.
 
 servers:
   - url: https://docx-generator-api.onrender.com
@@ -13,7 +13,12 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentDoc
-      summary: Generate assessment report and executive summary presentation
+      summary: Generate DOCX and PPTX from IT scoring and recommendations
+      description: >
+        Takes session-specific insights and produces two deliverables:
+        - A Word document with current state analysis and visual tier chart
+        - A PowerPoint executive summary
+
       requestBody:
         required: true
         content:
@@ -23,27 +28,28 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: Session identifier used for file naming and storage
-                  example: Temp_20250519_abc@example.com
+                  description: Unique session ID used to store output (with or without Temp_ prefix)
+                  example: Temp_20250519_user_example_com
                 score_summary:
                   type: string
-                  description: Summary of scoring results from the gap analysis (e.g., tier distribution, readiness scores)
-                  example: "25% Excellent, 45% Standard, 30% Obsolete"
+                  description: Summary of infrastructure scoring results (e.g., tier breakdowns, readiness scores)
+                  example: "Excellent: 15%, Advanced: 35%, Standard: 30%, Obsolete: 20%"
                 recommendations:
                   type: string
-                  description: Recommendations for modernization (e.g., upgrade obsolete, migrate to cloud)
-                  example: "Replace 60% of obsolete servers; consolidate Tier 2 data centers"
+                  description: AI-generated transformation advice based on the data (e.g., upgrades, migrations)
+                  example: "Migrate legacy workloads to cloud and decommission Tier 1 hardware."
                 key_findings:
                   type: string
-                  description: Optional executive-level insights
-                  example: "Legacy ERP servers show critical performance issues under load."
+                  description: Optional business or executive findings
+                  example: "Tier 3 hardware underpins critical applications with high SLA impact."
               required:
                 - session_id
                 - score_summary
                 - recommendations
+
       responses:
         "200":
-          description: Assessment DOCX and PPTX files successfully generated
+          description: Generated DOCX and PPTX URLs returned
           content:
             application/json:
               schema:
@@ -51,7 +57,9 @@ paths:
                 properties:
                   docx_url:
                     type: string
-                    description: Public URL to download the assessment DOCX
+                    description: Publicly accessible DOCX report URL
+                    example: https://docx-generator-api.onrender.com/files/Temp_20250519_user_example_com/IT_Current_Status_Assessment_Report.docx
                   pptx_url:
                     type: string
-                    description: Public URL to download the executive summary PPTX
+                    description: Publicly accessible PPTX summary URL
+                    example: https://docx-generator-api.onrender.com/files/Temp_20250519_user_example_com/IT_Current_Status_Executive_Report.pptx
