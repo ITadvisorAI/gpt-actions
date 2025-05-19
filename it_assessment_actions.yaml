@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 1.3.0
-  description: API for receiving IT assessment requests and submitting result files.
+  version: 1.4.0
+  description: API for receiving IT assessment requests and submitting result files to the next module.
 
 servers:
   - url: https://gpt-api-server-7wu8.onrender.com
@@ -11,8 +11,8 @@ paths:
   /receive_request:
     post:
       operationId: receiveGPTRequest
-      summary: Trigger IT Assessment task
-      description: Initiates the IT Assessment module with session and file metadata.
+      summary: Trigger IT Assessment processing
+      description: Starts the IT Assessment module using session metadata and uploaded infrastructure files.
       requestBody:
         required: true
         content:
@@ -22,7 +22,7 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: Unique session ID
+                  description: Unique session identifier (e.g., Temp_20240519_email)
                 email:
                   type: string
                   format: email
@@ -40,6 +40,7 @@ paths:
                     - it_financials
                 files:
                   type: array
+                  description: List of input files (inventory, logs, intake, etc.)
                   items:
                     type: object
                     properties:
@@ -50,16 +51,22 @@ paths:
                         format: uri
                       type:
                         type: string
+                        enum:
+                          - asset_inventory
+                          - gap_working
+                          - intake
+                          - log
                     required:
                       - file_name
                       - file_url
                       - type
                 source:
                   type: string
-                  description: Origin module
+                  description: Optional. Origin module (e.g., it_advisor)
                 next_action_webhook:
                   type: string
                   format: uri
+                  description: Webhook to forward output after processing
               required:
                 - session_id
                 - email
@@ -81,8 +88,8 @@ paths:
   /send_result:
     post:
       operationId: sendGPTResult
-      summary: Submit IT Assessment output files
-      description: Sends back up to four result files to the workflow.
+      summary: Return IT Assessment outputs
+      description: Sends final output files (DOCX, PPTX, Excel) to the next GPT or Make.com webhook.
       requestBody:
         required: true
         content:
@@ -129,7 +136,7 @@ paths:
                 - file_url
       responses:
         "200":
-          description: Results received successfully
+          description: Files successfully delivered
           content:
             application/json:
               schema:
@@ -142,7 +149,7 @@ paths:
   /notify_zip_delivery:
     post:
       operationId: notifyZipDelivery
-      summary: Notify ZIP delivery and close session
+      summary: Final ZIP delivery and session closure
       requestBody:
         required: true
         content:
@@ -160,7 +167,7 @@ paths:
                 - zip_url
       responses:
         "200":
-          description: ZIP delivery notification sent
+          description: ZIP delivery acknowledged
           content:
             application/json:
               schema:
