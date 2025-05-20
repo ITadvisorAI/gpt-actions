@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API - IT Advisor (via Proxy)
-  version: 1.2.0
+  version: 1.3.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
@@ -26,6 +26,58 @@ paths:
       responses:
         "200":
           description: Session started successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /upload_files:
+    post:
+      operationId: uploadFiles
+      summary: Send uploaded file metadata to Webhook 2 to store in Google Drive
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                session_id:
+                  type: string
+                gpt_module:
+                  type: string
+                  enum:
+                    - it_advisor
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                        format: uri
+                      type:
+                        type: string
+                    required:
+                      - file_name
+                      - file_url
+                      - type
+              required:
+                - email
+                - session_id
+                - gpt_module
+                - files
+      responses:
+        "200":
+          description: Files successfully submitted for upload
           content:
             application/json:
               schema:
