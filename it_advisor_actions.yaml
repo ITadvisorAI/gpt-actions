@@ -1,16 +1,20 @@
 openapi: 3.1.0
 info:
-  title: GPT Orchestration API - IT Advisor (via Proxy)
-  version: 1.3.0
+  title: GPT Orchestration API – IT Advisor (via Proxy)
+  version: 2.0.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
 
 paths:
-  /start_session:
+  /start_analysis:
     post:
-      operationId: startSession
-      summary: Start session by sending user email via Flask proxy to Make.com
+      operationId: startAnalysis
+      summary: Start transformation analysis by submitting email, user goal, and uploaded files
+      description: |
+        GPT1 collects email, transformation goal, and files, and submits this payload.
+        The backend generates a session ID, creates a Google Drive folder, downloads files, 
+        and triggers GPT2 (IT Assessment) with updated file links.
       requestBody:
         required: true
         content:
@@ -21,41 +25,13 @@ paths:
                 email:
                   type: string
                   format: email
-              required:
-                - email
-      responses:
-        "200":
-          description: Session started successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /upload_files:
-    post:
-      operationId: uploadFiles
-      summary: Send uploaded file metadata to Webhook 2 to store in Google Drive
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
+                  description: The user's email address for session tracking and delivery.
+                goal:
                   type: string
-                  format: email
-                session_id:
-                  type: string
-                gpt_module:
-                  type: string
-                  enum:
-                    - it_advisor
+                  description: A free-text explanation of what the user is looking to accomplish (e.g., "cloud transformation plan").
                 files:
                   type: array
+                  description: List of uploaded files with metadata.
                   items:
                     type: object
                     properties:
@@ -72,73 +48,11 @@ paths:
                       - type
               required:
                 - email
-                - session_id
-                - gpt_module
+                - goal
                 - files
       responses:
         "200":
-          description: Files successfully submitted for upload
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /receive_request:
-    post:
-      operationId: receiveGPTRequest
-      summary: Trigger a GPT module task
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                gpt_module:
-                  type: string
-                  enum:
-                    - it_advisor
-                    - it_assessment
-                    - gap_market
-                    - it_strategy
-                    - gap_target
-                    - it_compliance
-                    - roadmap
-                    - it_financials
-                files:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      file_name:
-                        type: string
-                      file_url:
-                        type: string
-                        format: uri
-                      type:
-                        type: string
-                    required:
-                      - file_name
-                      - file_url
-                      - type
-                source:
-                  type: string
-                next_action_webhook:
-                  type: string
-                  format: uri
-              required:
-                - session_id
-                - gpt_module
-                - files
-                - next_action_webhook
-      responses:
-        "200":
-          description: GPT task initiated
+          description: Intake data successfully received and processing initiated.
           content:
             application/json:
               schema:
@@ -150,7 +64,7 @@ paths:
   /send_result:
     post:
       operationId: sendGPTResult
-      summary: Submit GPT module result
+      summary: Submit GPT module result (DOCX, PPTX, XLSX, etc.)
       requestBody:
         required: true
         content:
@@ -194,7 +108,7 @@ paths:
                 - status
       responses:
         "200":
-          description: GPT result received
+          description: GPT result successfully received.
           content:
             application/json:
               schema:
@@ -206,7 +120,7 @@ paths:
   /notify_zip_delivery:
     post:
       operationId: notifyZipDelivery
-      summary: Notify user of ZIP delivery and close session
+      summary: Notify the user that the final ZIP file has been delivered and close the session
       requestBody:
         required: true
         content:
@@ -224,7 +138,7 @@ paths:
                 - zip_url
       responses:
         "200":
-          description: ZIP notification delivered
+          description: ZIP delivery notification successfully handled.
           content:
             application/json:
               schema:
