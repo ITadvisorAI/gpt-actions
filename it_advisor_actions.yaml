@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Advisor (via Proxy)
-  version: 2.2.0
+  version: 2.3.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
@@ -64,6 +64,16 @@ paths:
       description: |
         Uploads a file received from GPT1 and stores it in the shared Google Drive temp folder.
         Returns file name, public Drive link, type, and email used for the upload.
+      x-openai-form-data-parameters:
+        - name: file
+          type: file
+          required: true
+        - name: email
+          type: string
+          required: true
+        - name: type
+          type: string
+          required: false
       requestBody:
         required: true
         content:
