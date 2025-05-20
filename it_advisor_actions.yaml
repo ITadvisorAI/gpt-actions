@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Advisor (via Proxy)
-  version: 2.1.0
+  version: 2.2.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
@@ -12,8 +12,8 @@ paths:
       operationId: startAnalysis
       summary: Start transformation analysis by submitting email, user goal, and uploaded files
       description: |
-        GPT1 collects email, transformation goal, and uploaded file links (Google Drive), and submits this payload.
-        The backend generates a session ID, creates a Google Drive folder, and triggers GPT2 (IT Assessment).
+        GPT1 collects the user's email, transformation goal, and uploaded file metadata, then submits this payload.
+        The backend generates a session ID, creates a Google Drive session folder, and triggers GPT2 (IT Assessment).
       requestBody:
         required: true
         content:
@@ -63,7 +63,7 @@ paths:
       summary: Upload a file to Google Drive via Flask backend
       description: |
         Uploads a file received from GPT1 and stores it in the shared Google Drive temp folder.
-        Returns a public webViewLink, file ID, and classification type.
+        Returns file name, public Drive link, type, and email used for the upload.
       requestBody:
         required: true
         content:
@@ -101,6 +101,11 @@ paths:
                     type: string
                   email:
                     type: string
+              required:
+                - file_name
+                - file_url
+                - type
+                - email
 
   /send_result:
     post:
