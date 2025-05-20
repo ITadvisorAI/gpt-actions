@@ -1,70 +1,18 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Advisor (via Proxy)
-  version: 2.4.0
+  version: 2.5.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
 
 paths:
-  /start_analysis:
-    post:
-      operationId: startAnalysis
-      summary: Start transformation analysis by submitting email, user goal, and uploaded files
-      description: |
-        GPT1 collects the user's email, transformation goal, and uploaded file metadata,
-        then submits this payload. The backend generates a session ID, creates a Google Drive session folder,
-        and triggers GPT2 (IT Assessment).
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                goal:
-                  type: string
-                files:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      file_name:
-                        type: string
-                      file_url:
-                        type: string
-                        format: uri
-                      type:
-                        type: string
-                    required:
-                      - file_name
-                      - file_url
-                      - type
-              required:
-                - email
-                - goal
-                - files
-      responses:
-        "200":
-          description: Intake data successfully received and processing initiated.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
   /upload_to_drive:
     post:
       operationId: uploadToDrive
       summary: Upload a file to Google Drive via Flask backend
       description: |
         Uploads a file from GPT1 and stores it in the shared Google Drive temp folder.
-        Returns file name, public Drive link, file type, and user email.
       x-openai-form-data-parameters:
         - name: file
           type: file
@@ -87,7 +35,6 @@ paths:
                   format: binary
                 email:
                   type: string
-                  format: email
                 type:
                   type: string
               required:
@@ -95,7 +42,7 @@ paths:
                 - email
       responses:
         "200":
-          description: File successfully uploaded and metadata returned.
+          description: File successfully uploaded.
           content:
             application/json:
               schema:
@@ -103,105 +50,10 @@ paths:
                 properties:
                   file_name:
                     type: string
-                  file_id:
-                    type: string
                   file_url:
                     type: string
                     format: uri
-                  type:
-                    type: string
                   email:
                     type: string
-              required:
-                - file_name
-                - file_url
-                - type
-                - email
-
-  /send_result:
-    post:
-      operationId: sendGPTResult
-      summary: Submit GPT module result (DOCX, PPTX, XLSX, etc.)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                gpt_module:
-                  type: string
-                  enum:
-                    - it_advisor
-                    - it_assessment
-                    - gap_market
-                    - it_strategy
-                    - gap_target
-                    - it_compliance
-                    - roadmap
-                    - it_financials
-                file_name:
-                  type: string
-                file_url:
-                  type: string
-                  format: uri
-                file_2_name:
-                  type: string
-                file_2_url:
-                  type: string
-                  format: uri
-                status:
-                  type: string
-                  example: complete
-                message:
-                  type: string
-              required:
-                - session_id
-                - gpt_module
-                - file_name
-                - file_url
-                - status
-      responses:
-        "200":
-          description: GPT result successfully received.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
+                  type:
                     type: string
-
-  /notify_zip_delivery:
-    post:
-      operationId: notifyZipDelivery
-      summary: Notify the user that the final ZIP file has been delivered and close the session
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                zip_url:
-                  type: string
-                  format: uri
-              required:
-                - session_id
-                - zip_url
-      responses:
-        "200":
-          description: ZIP delivery notification successfully handled.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: >
-                      Please find the link to download your IT Transformation reports. This session has now ended and the Google Drive along with all the reports that you uploaded and were generated have been deleted. A copy of this zipped file has been emailed to you also. In case you have any questions on the reports, request you to please upload the report files in this chat for me to review and provide insights.
