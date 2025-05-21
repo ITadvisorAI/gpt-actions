@@ -1,16 +1,16 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 1.4.0
+  version: 2.0.0
   description: API for receiving IT assessment requests and submitting result files to the next module.
 
 servers:
-  - url: https://gpt-api-server-7wu8.onrender.com
+  - url: https://it-assessment-api.onrender.com
 
 paths:
-  /receive_request:
+  /start_assessment:
     post:
-      operationId: receiveGPTRequest
+      operationId: startAssessment
       summary: Trigger IT Assessment processing
       description: Starts the IT Assessment module using session metadata and uploaded infrastructure files.
       requestBody:
@@ -27,17 +27,6 @@ paths:
                   type: string
                   format: email
                   description: User's email address
-                gpt_module:
-                  type: string
-                  enum:
-                    - it_advisor
-                    - it_assessment
-                    - gap_market
-                    - it_strategy
-                    - gap_target
-                    - it_compliance
-                    - roadmap
-                    - it_financials
                 files:
                   type: array
                   description: List of input files (inventory, logs, intake, etc.)
@@ -60,9 +49,6 @@ paths:
                       - file_name
                       - file_url
                       - type
-                source:
-                  type: string
-                  description: Optional. Origin module (e.g., it_advisor)
                 next_action_webhook:
                   type: string
                   format: uri
@@ -70,7 +56,6 @@ paths:
               required:
                 - session_id
                 - email
-                - gpt_module
                 - files
                 - next_action_webhook
       responses:
@@ -87,7 +72,7 @@ paths:
 
   /send_result:
     post:
-      operationId: sendGPTResult
+      operationId: sendAssessmentResult
       summary: Return IT Assessment outputs
       description: Sends final output files (DOCX, PPTX, Excel) to the next GPT or Make.com webhook.
       requestBody:
