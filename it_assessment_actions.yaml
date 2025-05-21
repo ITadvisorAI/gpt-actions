@@ -1,8 +1,10 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 1.5.0
-  description: API for receiving IT assessment requests and submitting result files to the next module.
+  version: 1.6.0
+  description: >
+    API for receiving IT assessment requests from GPT1, analyzing infrastructure files,
+    and forwarding output files to the next GPT (e.g., Market GAP Analysis).
 
 servers:
   - url: https://it-assessment-api.onrender.com
@@ -12,7 +14,7 @@ paths:
     post:
       operationId: receiveGPTRequest
       summary: Trigger IT Assessment processing
-      description: |
+      description: >
         Starts the IT Assessment module using session metadata and uploaded infrastructure files.
         Output files are forwarded to the next_action_webhook (e.g., Market GAP Analysis).
       requestBody:
@@ -35,15 +37,18 @@ paths:
                   description: Module identifier
                 files:
                   type: array
+                  description: List of input files
                   minItems: 1
                   items:
                     type: object
                     properties:
                       file_name:
                         type: string
+                        description: Original name of uploaded file
                       file_url:
                         type: string
                         format: uri
+                        description: URL pointing to downloadable file
                       type:
                         type: string
                         enum:
@@ -51,17 +56,18 @@ paths:
                           - gap_working
                           - intake
                           - log
+                        description: File classification type
                     required:
                       - file_name
                       - file_url
                       - type
                 source:
                   type: string
-                  description: Origin module (e.g., it_advisor)
+                  description: Origin GPT module (e.g., it_advisor)
                 next_action_webhook:
                   type: string
                   format: uri
-                  description: Webhook to forward output to (e.g., Market GAP Analysis)
+                  description: Webhook URL to which output will be posted after assessment
               required:
                 - session_id
                 - email
@@ -70,7 +76,7 @@ paths:
                 - next_action_webhook
       responses:
         "200":
-          description: Assessment request accepted
+          description: IT Assessment request accepted
           content:
             application/json:
               schema:
@@ -83,8 +89,10 @@ paths:
   /send_result:
     post:
       operationId: sendGPTResult
-      summary: Send output files to next module
-      description: Posts assessment outputs to next GPT webhook (e.g., Market GAP Analysis)
+      summary: Send output files to next GPT module
+      description: >
+        Delivers DOCX, PPTX, and XLSX outputs to the webhook of the next module
+        such as Market GAP Analysis or IT Strategy.
       requestBody:
         required: true
         content:
@@ -102,6 +110,7 @@ paths:
                   example: complete
                 message:
                   type: string
+                  description: Optional message about status or results
                 file_1_name:
                   type: string
                 file_1_url:
@@ -144,6 +153,8 @@ paths:
     post:
       operationId: notifyZipDelivery
       summary: Final ZIP delivery notification
+      description: >
+        Informs the system that the full bundle ZIP has been delivered to the user and the session can be marked complete.
       requestBody:
         required: true
         content:
