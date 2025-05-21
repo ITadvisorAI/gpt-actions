@@ -1,18 +1,20 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 2.0.0
+  version: 1.5.0
   description: API for receiving IT assessment requests and submitting result files to the next module.
 
 servers:
   - url: https://it-assessment-api.onrender.com
 
 paths:
-  /start_assessment:
+  /receive_request:
     post:
-      operationId: startAssessment
+      operationId: receiveGPTRequest
       summary: Trigger IT Assessment processing
-      description: Starts the IT Assessment module using session metadata and uploaded infrastructure files.
+      description: |
+        Starts the IT Assessment module using session metadata and uploaded infrastructure files.
+        Output files are forwarded to the next_action_webhook (e.g., Market GAP Analysis).
       requestBody:
         required: true
         content:
@@ -22,14 +24,18 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: Unique session identifier (e.g., Temp_20240519_email)
+                  description: Unique session ID (e.g., Temp_20250520_user@example.com)
                 email:
                   type: string
                   format: email
                   description: User's email address
+                gpt_module:
+                  type: string
+                  enum: [it_assessment]
+                  description: Module identifier
                 files:
                   type: array
-                  description: List of input files (inventory, logs, intake, etc.)
+                  minItems: 1
                   items:
                     type: object
                     properties:
@@ -49,18 +55,22 @@ paths:
                       - file_name
                       - file_url
                       - type
+                source:
+                  type: string
+                  description: Origin module (e.g., it_advisor)
                 next_action_webhook:
                   type: string
                   format: uri
-                  description: Webhook to forward output after processing
+                  description: Webhook to forward output to (e.g., Market GAP Analysis)
               required:
                 - session_id
                 - email
+                - gpt_module
                 - files
                 - next_action_webhook
       responses:
         "200":
-          description: IT Assessment request accepted
+          description: Assessment request accepted
           content:
             application/json:
               schema:
@@ -72,9 +82,9 @@ paths:
 
   /send_result:
     post:
-      operationId: sendAssessmentResult
-      summary: Return IT Assessment outputs
-      description: Sends final output files (DOCX, PPTX, Excel) to the next GPT or Make.com webhook.
+      operationId: sendGPTResult
+      summary: Send output files to next module
+      description: Posts assessment outputs to next GPT webhook (e.g., Market GAP Analysis)
       requestBody:
         required: true
         content:
@@ -86,11 +96,15 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum:
-                    - it_assessment
-                file_name:
+                  enum: [it_assessment]
+                status:
                   type: string
-                file_url:
+                  example: complete
+                message:
+                  type: string
+                file_1_name:
+                  type: string
+                file_1_url:
                   type: string
                   format: uri
                 file_2_name:
@@ -108,17 +122,12 @@ paths:
                 file_4_url:
                   type: string
                   format: uri
-                status:
-                  type: string
-                  example: complete
-                message:
-                  type: string
               required:
                 - session_id
                 - gpt_module
                 - status
-                - file_name
-                - file_url
+                - file_1_name
+                - file_1_url
       responses:
         "200":
           description: Files successfully delivered
@@ -134,7 +143,7 @@ paths:
   /notify_zip_delivery:
     post:
       operationId: notifyZipDelivery
-      summary: Final ZIP delivery and session closure
+      summary: Final ZIP delivery notification
       requestBody:
         required: true
         content:
