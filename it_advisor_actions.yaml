@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Advisor (via Proxy)
-  version: 3.0.0
+  version: 3.1.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
@@ -48,6 +48,7 @@ paths:
       summary: Trigger GPT2 for IT Assessment using uploaded files
       description: |
         Triggers GPT2 by sending the list of uploaded files from the session-specific folder along with session details.
+        Each file must include a correctly classified `type` such as 'asset_inventory', 'log', etc.
       requestBody:
         required: true
         content:
@@ -64,6 +65,7 @@ paths:
                   type: string
                 files:
                   type: array
+                  minItems: 1
                   items:
                     type: object
                     properties:
@@ -74,7 +76,15 @@ paths:
                         format: uri
                       type:
                         type: string
-                  minItems: 1
+                        enum:
+                          - asset_inventory
+                          - intake
+                          - gap_working
+                          - log
+                    required:
+                      - file_name
+                      - file_url
+                      - type
               required:
                 - session_id
                 - email
@@ -90,4 +100,4 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "GPT2 started"
+                    example: GPT2 started
