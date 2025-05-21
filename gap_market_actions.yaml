@@ -1,7 +1,8 @@
 openapi: 3.1.0
 info:
-  title: GPT Orchestration API
-  version: 1.0.1
+  title: GPT Orchestration API – Market GAP Analysis
+  version: 1.1.0
+  description: Receives IT assessment output from GPT2 and initiates Market GAP Analysis.
 
 servers:
   - url: https://gpt-api-server-7wu8.onrender.com
@@ -10,7 +11,9 @@ paths:
   /receive_request:
     post:
       operationId: receiveGPTRequest
-      summary: Trigger a GPT module task
+      summary: Receive results from GPT2 for Market GAP Analysis
+      description: >
+        Accepts outputs from the IT Assessment module (GPT2) and triggers Market GAP Analysis.
       requestBody:
         required: true
         content:
@@ -20,9 +23,10 @@ paths:
               properties:
                 session_id:
                   type: string
+                  example: Temp_20250521_user@example.com
                 gpt_module:
                   type: string
-                   enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
+                  enum: [it_assessment]
                 files:
                   type: array
                   items:
@@ -32,13 +36,17 @@ paths:
                         type: string
                       file_url:
                         type: string
+                        format: uri
                     required:
                       - file_name
                       - file_url
                 source:
                   type: string
+                  example: it_assessment
                 next_action_webhook:
                   type: string
+                  format: uri
+                  example: https://hook.us2.make.com/w7xafp1yx69vhb13t7yc5aduru4i9l4i
               required:
                 - session_id
                 - gpt_module
@@ -46,7 +54,7 @@ paths:
                 - next_action_webhook
       responses:
         "200":
-          description: GPT request received
+          description: GPT2 output received for Market GAP Analysis
           content:
             application/json:
               schema:
@@ -54,11 +62,13 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: Market GAP Analysis started
 
   /send_result:
     post:
       operationId: sendGPTResult
-      summary: Submit GPT module result
+      summary: Send Market GAP result to next module
+      description: Posts generated analysis outputs to the next module webhook.
       requestBody:
         required: true
         content:
@@ -70,26 +80,31 @@ paths:
                   type: string
                 gpt_module:
                   type: string
-                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
-                file_name:
+                  enum: [gap_market]
+                status:
                   type: string
-                file_url:
+                  example: complete
+                message:
                   type: string
+                file_1_name:
+                  type: string
+                file_1_url:
+                  type: string
+                  format: uri
                 file_2_name:
                   type: string
                 file_2_url:
                   type: string
-                status:
-                  type: string
+                  format: uri
               required:
                 - session_id
                 - gpt_module
-                - file_name
-                - file_url
                 - status
+                - file_1_name
+                - file_1_url
       responses:
         "200":
-          description: GPT result posted successfully
+          description: Market GAP output successfully posted
           content:
             application/json:
               schema:
@@ -97,11 +112,12 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: Files delivered to next module
 
   /notify_zip_delivery:
     post:
       operationId: notifyZipDelivery
-      summary: Notify user of ZIP delivery and end of session
+      summary: Notify session completion and ZIP delivery
       requestBody:
         required: true
         content:
@@ -118,7 +134,7 @@ paths:
                 - zip_url
       responses:
         "200":
-          description: ZIP delivery notification sent
+          description: ZIP delivery acknowledged
           content:
             application/json:
               schema:
@@ -127,4 +143,4 @@ paths:
                   message:
                     type: string
                     example: >-
-                      Please find the link to download your IT Transformation reports. This session has now ended and the Google Drive along with all the reports that you uploaded and were generated have been deleted. A copy of this zipped file has been emailed to you also. In case you have any questions on the reports, request you to please upload the report files in this chat for me to review and provide insights.
+                      Final ZIP sent. Reports delivered successfully and session closed.
