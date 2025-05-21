@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.2.0
+  version: 1.3.0
   description: >
     This API generates a DOCX report and PPTX executive summary for an IT assessment session.
     The output is based on tier distribution, modernization recommendations, and summary insights.
@@ -12,13 +12,12 @@ servers:
 paths:
   /generate_assessment:
     post:
-      operationId: generateAssessmentDoc
+      operationId: generateAssessmentReports
       summary: Generate DOCX and PPTX from IT scoring and recommendations
       description: >
         Takes session-specific insights and produces two deliverables:
         - A Word document with current state analysis and visual tier chart
         - A PowerPoint executive summary
-
       requestBody:
         required: true
         content:
@@ -36,7 +35,7 @@ paths:
                   example: "Excellent: 15%, Advanced: 35%, Standard: 30%, Obsolete: 20%"
                 recommendations:
                   type: string
-                  description: AI-generated transformation advice based on the data (e.g., upgrades, migrations)
+                  description: AI-generated transformation advice based on the data
                   example: "Migrate legacy workloads to cloud and decommission Tier 1 hardware."
                 key_findings:
                   type: string
@@ -46,7 +45,6 @@ paths:
                 - session_id
                 - score_summary
                 - recommendations
-
       responses:
         "200":
           description: Generated DOCX and PPTX URLs returned
