@@ -1,59 +1,93 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Advisor (via Proxy)
-  version: 2.5.0
+  version: 3.0.0
 
 servers:
   - url: https://gpt1-proxy.onrender.com
 
 paths:
-  /upload_to_drive:
+  /start_analysis:
     post:
-      operationId: uploadToDrive
-      summary: Upload a file to Google Drive via Flask backend
+      operationId: startAnalysis
+      summary: Initialize session and Google Drive folder
       description: |
-        Uploads a file from GPT1 and stores it in the shared Google Drive temp folder.
-      x-openai-form-data-parameters:
-        - name: file
-          type: file
-          required: true
-        - name: email
-          type: string
-          required: true
-        - name: type
-          type: string
-          required: false
+        Starts a new GPT1 session by generating a session ID, creating a Google Drive folder, and updating the session tracker.
       requestBody:
         required: true
         content:
-          multipart/form-data:
+          application/json:
             schema:
               type: object
               properties:
-                file:
-                  type: string
-                  format: binary
                 email:
                   type: string
-                type:
+                  format: email
+                goal:
                   type: string
               required:
-                - file
                 - email
+                - goal
       responses:
         "200":
-          description: File successfully uploaded.
+          description: Session initialized and folder URL returned.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  file_name:
+                  session_id:
                     type: string
-                  file_url:
+                  folder_url:
                     type: string
                     format: uri
-                  email:
+
+  /start_assessment:
+    post:
+      operationId: startAssessment
+      summary: Trigger GPT2 for IT Assessment using uploaded files
+      description: |
+        Triggers GPT2 by sending the list of uploaded files from the session-specific folder along with session details.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                goal:
+                  type: string
+                files:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      file_name:
+                        type: string
+                      file_url:
+                        type: string
+                        format: uri
+                      type:
+                        type: string
+                  minItems: 1
+              required:
+                - session_id
+                - email
+                - goal
+                - files
+      responses:
+        "200":
+          description: GPT2 triggered successfully for assessment.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
                     type: string
-                  type:
-                    type: string
+                    example: "GPT2 started"
