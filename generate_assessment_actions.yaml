@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.5.1
+  version: 1.5.2
   description: >
     This API generates a DOCX report and PPTX executive summary for an IT assessment session.
     The output is based on tier distribution analysis, modernization recommendations, and strategic insights.
@@ -16,10 +16,10 @@ paths:
       summary: Generate DOCX and PPTX reports based on IT assessment scoring
       description: >
         Generates two deliverables for a given IT modernization session:
-        
+
         1. A Word document (DOCX) containing a detailed current-state infrastructure assessment with visuals.
         2. A PowerPoint presentation (PPTX) summarizing executive insights, tier distribution, and modernization highlights.
-        
+
         All files are generated and stored in a folder identified by the session_id.
 
       requestBody:
@@ -34,7 +34,7 @@ paths:
                   description: >
                     Unique session identifier used to determine the storage folder for generated documents.
                     Must begin with 'Temp_' and be unique per request.
-                  example: Temp_20250521_user_example_com
+                  example: Temp_20250522_user_example_com
                 score_summary:
                   type: string
                   description: >
@@ -67,8 +67,13 @@ paths:
                   docx_url:
                     type: string
                     description: Public URL of the generated Word report
-                    example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Assessment_Report.docx
+                    example: https://docx-generator-api.onrender.com/files/Temp_20250522_user_example_com/IT_Current_Status_Assessment_Report.docx
                   pptx_url:
                     type: string
                     description: Public URL of the generated PowerPoint summary
-                    example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Executive_Report.pptx
+                    example: https://docx-generator-api.onrender.com/files/Temp_20250522_user_example_com/IT_Current_Status_Executive_Report.pptx
+
+        "400":
+          description: Missing or invalid input parameters
+        "500":
+          description: Internal error generating reports
