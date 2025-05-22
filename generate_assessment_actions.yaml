@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.5.0
+  version: 1.5.1
   description: >
     This API generates a DOCX report and PPTX executive summary for an IT assessment session.
     The output is based on tier distribution analysis, modernization recommendations, and strategic insights.
@@ -16,9 +16,11 @@ paths:
       summary: Generate DOCX and PPTX reports based on IT assessment scoring
       description: >
         Generates two deliverables for a given IT modernization session:
+        
         1. A Word document (DOCX) containing a detailed current-state infrastructure assessment with visuals.
+        
         2. A PowerPoint presentation (PPTX) summarizing executive insights, tier distribution, and modernization highlights.
-
+        
         All files are generated and stored in a folder identified by the session_id.
 
       requestBody:
@@ -31,8 +33,8 @@ paths:
                 session_id:
                   type: string
                   description: >
-                    Unique session identifier, used to determine the storage folder for generated documents.
-                    Must begin with 'Temp_' and be unique for each request.
+                    Unique session identifier used to determine the storage folder for generated documents.
+                    Must begin with 'Temp_' and be unique per request.
                   example: Temp_20250521_user_example_com
                 score_summary:
                   type: string
@@ -42,13 +44,13 @@ paths:
                 recommendations:
                   type: string
                   description: >
-                    Summary of modernization recommendations including actions such as cloud migration, hardware upgrades,
+                    Summary of modernization recommendations including cloud migration, hardware refreshes,
                     or workload redistribution.
                   example: "Decommission Tier 1 servers and migrate Tier 2 workloads to Azure."
                 key_findings:
                   type: string
                   description: >
-                    Optional business-level observations for executive awareness (e.g., security risks, compliance gaps).
+                    Optional business-level observations for executive awareness (e.g., security risks, SLA violations, compliance gaps).
                   example: "Several critical systems run on unsupported platforms, posing business continuity risks."
               required:
                 - session_id
@@ -65,9 +67,9 @@ paths:
                 properties:
                   docx_url:
                     type: string
-                    description: Public link to the generated Word document
+                    description: Public URL of the generated Word report
                     example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Assessment_Report.docx
                   pptx_url:
                     type: string
-                    description: Public link to the generated PowerPoint presentation
+                    description: Public URL of the generated PowerPoint summary
                     example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Executive_Report.pptx
