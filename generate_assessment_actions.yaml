@@ -18,7 +18,6 @@ paths:
         Generates two deliverables for a given IT modernization session:
         
         1. A Word document (DOCX) containing a detailed current-state infrastructure assessment with visuals.
-        
         2. A PowerPoint presentation (PPTX) summarizing executive insights, tier distribution, and modernization highlights.
         
         All files are generated and stored in a folder identified by the session_id.
