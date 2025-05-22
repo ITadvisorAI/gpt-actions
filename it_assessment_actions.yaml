@@ -1,10 +1,10 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 1.7.0
+  version: 1.8.0
   description: >
     API for receiving IT assessment requests from GPT1, analyzing infrastructure files,
-    and forwarding output files to the next GPT (e.g., Market GAP Analysis).
+    and forwarding output files to the next GPT module (e.g., Market GAP Analysis).
 
 servers:
   - url: https://it-assessment-api.onrender.com
@@ -16,8 +16,7 @@ paths:
       summary: Start IT Assessment processing
       description: >
         Receives session metadata and infrastructure files from GPT1 and
-        initiates asynchronous assessment. Results will be sent to the provided
-        next_action_webhook.
+        initiates asynchronous assessment. Output results will be sent to the next GPT API endpoint.
       requestBody:
         required: true
         content:
@@ -59,6 +58,7 @@ paths:
                           - firewall_rules
                           - backup_schedule
                           - strategy_input
+                          - general
                     required:
                       - file_name
                       - file_url
@@ -66,7 +66,7 @@ paths:
                 next_action_webhook:
                   type: string
                   format: uri
-                  description: API endpoint to which the assessment results will be POSTed
+                  description: API endpoint of the next GPT module (e.g., Market GAP Analysis)
               required:
                 - session_id
                 - email
