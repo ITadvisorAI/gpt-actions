@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API – IT Assessment Module
-  version: 1.6.0
+  version: 1.7.0
   description: >
     API for receiving IT assessment requests from GPT1, analyzing infrastructure files,
     and forwarding output files to the next GPT (e.g., Market GAP Analysis).
@@ -10,13 +10,14 @@ servers:
   - url: https://it-assessment-api.onrender.com
 
 paths:
-  /receive_request:
+  /start_assessment:
     post:
-      operationId: receiveGPTRequest
-      summary: Trigger IT Assessment processing
+      operationId: startAssessment
+      summary: Start IT Assessment processing
       description: >
-        Starts the IT Assessment module using session metadata and uploaded infrastructure files.
-        Output files are forwarded to the next_action_webhook (e.g., Market GAP Analysis).
+        Receives session metadata and infrastructure files from GPT1 and
+        initiates asynchronous assessment. Results will be sent to the provided
+        next_action_webhook.
       requestBody:
         required: true
         content:
@@ -26,29 +27,26 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: Unique session ID (e.g., Temp_20250520_user@example.com)
+                  description: Unique session ID (e.g., Temp_20250521_user@example.com)
                 email:
                   type: string
                   format: email
                   description: User's email address
-                gpt_module:
+                goal:
                   type: string
-                  enum: [it_assessment]
-                  description: Module identifier
+                  description: Free-text goal description
                 files:
                   type: array
-                  description: List of input files
                   minItems: 1
+                  description: List of uploaded infrastructure files
                   items:
                     type: object
                     properties:
                       file_name:
                         type: string
-                        description: Original name of uploaded file
                       file_url:
                         type: string
                         format: uri
-                        description: URL pointing to downloadable file
                       type:
                         type: string
                         enum:
@@ -56,22 +54,22 @@ paths:
                           - gap_working
                           - intake
                           - log
-                        description: File classification type
+                          - capacity_plan
+                          - compliance_report
+                          - firewall_rules
+                          - backup_schedule
+                          - strategy_input
                     required:
                       - file_name
                       - file_url
                       - type
-                source:
-                  type: string
-                  description: Origin GPT module (e.g., it_advisor)
                 next_action_webhook:
                   type: string
                   format: uri
-                  description: Webhook URL to which output will be posted after assessment
+                  description: API endpoint to which the assessment results will be POSTed
               required:
                 - session_id
                 - email
-                - gpt_module
                 - files
                 - next_action_webhook
       responses:
@@ -88,11 +86,10 @@ paths:
 
   /send_result:
     post:
-      operationId: sendGPTResult
-      summary: Send output files to next GPT module
+      operationId: sendResult
+      summary: Send output files to the next GPT module
       description: >
-        Delivers DOCX, PPTX, and XLSX outputs to the webhook of the next module
-        such as Market GAP Analysis or IT Strategy.
+        Delivers DOCX, PPTX, and XLSX output to the next module such as Market GAP Analysis.
       requestBody:
         required: true
         content:
@@ -110,7 +107,7 @@ paths:
                   example: complete
                 message:
                   type: string
-                  description: Optional message about status or results
+                  description: Optional status message
                 file_1_name:
                   type: string
                 file_1_url:
@@ -139,7 +136,7 @@ paths:
                 - file_1_url
       responses:
         "200":
-          description: Files successfully delivered
+          description: Output acknowledged
           content:
             application/json:
               schema:
@@ -154,7 +151,8 @@ paths:
       operationId: notifyZipDelivery
       summary: Final ZIP delivery notification
       description: >
-        Informs the system that the full bundle ZIP has been delivered to the user and the session can be marked complete.
+        Informs the system that the full bundle ZIP has been delivered to the user
+        and the session can be marked complete.
       requestBody:
         required: true
         content:
