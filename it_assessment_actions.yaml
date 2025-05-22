@@ -30,14 +30,13 @@ paths:
                 email:
                   type: string
                   format: email
-                  description: User's email address
                 goal:
                   type: string
-                  description: Free-text goal description
+                  description: Free-text transformation goal
                 files:
                   type: array
                   minItems: 1
-                  description: List of uploaded infrastructure files
+                  description: List of infrastructure input files
                   items:
                     type: object
                     properties:
@@ -66,7 +65,6 @@ paths:
                 next_action_webhook:
                   type: string
                   format: uri
-                  description: API endpoint of the next GPT module (e.g., Market GAP Analysis)
               required:
                 - session_id
                 - email
@@ -89,7 +87,7 @@ paths:
       operationId: sendResult
       summary: Send output files to the next GPT module
       description: >
-        Delivers DOCX, PPTX, and XLSX output to the next module such as Market GAP Analysis.
+        Delivers DOCX, PPTX, and XLSX output to the next module (e.g., Market GAP Analysis).
       requestBody:
         required: true
         content:
@@ -107,7 +105,6 @@ paths:
                   example: complete
                 message:
                   type: string
-                  description: Optional status message
                 file_1_name:
                   type: string
                 file_1_url:
@@ -151,8 +148,7 @@ paths:
       operationId: notifyZipDelivery
       summary: Final ZIP delivery notification
       description: >
-        Informs the system that the full bundle ZIP has been delivered to the user
-        and the session can be marked complete.
+        Informs the system that the final ZIP bundle has been delivered to the user.
       requestBody:
         required: true
         content:
