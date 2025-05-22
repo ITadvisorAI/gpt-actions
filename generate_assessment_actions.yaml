@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.4.0
+  version: 1.5.0
   description: >
     This API generates a DOCX report and PPTX executive summary for an IT assessment session.
     The output is based on tier distribution analysis, modernization recommendations, and strategic insights.
@@ -13,13 +13,13 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentReports
-      summary: Generate DOCX and PPTX from IT scoring and recommendations
+      summary: Generate DOCX and PPTX reports based on IT assessment scoring
       description: >
         Generates two deliverables for a given IT modernization session:
-        1. A Word document (DOCX) providing a detailed current-state assessment with visual charts.
-        2. A PowerPoint deck (PPTX) summarizing the key executive highlights and tier recommendations.
+        1. A Word document (DOCX) containing a detailed current-state infrastructure assessment with visuals.
+        2. A PowerPoint presentation (PPTX) summarizing executive insights, tier distribution, and modernization highlights.
 
-        All files are stored in the folder associated with the session_id.
+        All files are generated and stored in a folder identified by the session_id.
 
       requestBody:
         required: true
@@ -31,24 +31,25 @@ paths:
                 session_id:
                   type: string
                   description: >
-                    Unique session ID used to determine storage folder for generated files.
-                    Should begin with 'Temp_' and be unique per session.
+                    Unique session identifier, used to determine the storage folder for generated documents.
+                    Must begin with 'Temp_' and be unique for each request.
                   example: Temp_20250521_user_example_com
                 score_summary:
                   type: string
                   description: >
-                    High-level breakdown of scoring results across tiers (e.g., Excellent, Advanced, Standard, Obsolete).
-                  example: "Excellent: 15%, Advanced: 35%, Standard: 30%, Obsolete: 20%"
+                    Summary of infrastructure scoring by tier (e.g., Excellent, Advanced, Standard, Obsolete).
+                  example: "Excellent: 20%, Advanced: 40%, Standard: 30%, Obsolete: 10%"
                 recommendations:
                   type: string
                   description: >
-                    AI-generated modernization advice, including infrastructure upgrades, cloud adoption, or decommissioning steps.
-                  example: "Migrate legacy workloads to AWS and decommission obsolete Tier 1 physical servers."
+                    Summary of modernization recommendations including actions such as cloud migration, hardware upgrades,
+                    or workload redistribution.
+                  example: "Decommission Tier 1 servers and migrate Tier 2 workloads to Azure."
                 key_findings:
                   type: string
                   description: >
-                    Optional high-level business observations or risks from the assessment, suitable for executive briefings.
-                  example: "Critical business systems rely on end-of-life hardware, increasing SLA and security risks."
+                    Optional business-level observations for executive awareness (e.g., security risks, compliance gaps).
+                  example: "Several critical systems run on unsupported platforms, posing business continuity risks."
               required:
                 - session_id
                 - score_summary
@@ -56,7 +57,7 @@ paths:
 
       responses:
         "200":
-          description: Generated report URLs returned successfully
+          description: URLs to the generated DOCX and PPTX files
           content:
             application/json:
               schema:
@@ -64,9 +65,9 @@ paths:
                 properties:
                   docx_url:
                     type: string
-                    description: Public URL of the generated Word report
+                    description: Public link to the generated Word document
                     example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Assessment_Report.docx
                   pptx_url:
                     type: string
-                    description: Public URL of the generated PowerPoint summary
+                    description: Public link to the generated PowerPoint presentation
                     example: https://docx-generator-api.onrender.com/files/Temp_20250521_user_example_com/IT_Current_Status_Executive_Report.pptx
