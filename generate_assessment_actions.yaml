@@ -3,8 +3,7 @@ info:
   title: Generate IT Assessment Reports
   version: 1.5.2
   description: >
-    This API generates a DOCX report and PPTX executive summary for an IT assessment session.
-    The output is based on tier distribution analysis, modernization recommendations, and strategic insights.
+    Generates DOCX and PPTX reports for an IT session based on scoring, findings, and recommendations.
 
 servers:
   - url: https://docx-generator-api.onrender.com
@@ -13,15 +12,14 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentReports
-      summary: Generate DOCX and PPTX reports based on IT assessment scoring
+      summary: Generate DOCX and PPTX reports from assessment data
       description: >
-        Generates two deliverables for a given IT modernization session:
+        Produces two deliverables for an IT session:
 
-        1. A Word document (DOCX) containing a detailed current-state infrastructure assessment with visuals.
-        2. A PowerPoint presentation (PPTX) summarizing executive insights, tier distribution, and modernization highlights.
+        1. A DOCX report with detailed infrastructure assessment.
+        2. A PPTX presentation summarizing insights and recommendations.
 
-        All files are generated and stored in a folder identified by the session_id.
-
+        Files are stored in a session-specific folder.
       requestBody:
         required: true
         content:
@@ -31,31 +29,24 @@ paths:
               properties:
                 session_id:
                   type: string
-                  description: >
-                    Unique session identifier used to determine the storage folder for generated documents.
-                    Must begin with 'Temp_' and be unique per request.
+                  description: Unique folder/session identifier (e.g., Temp_YYYYMMDD_email_com)
                   example: Temp_20250522_user_example_com
                 score_summary:
                   type: string
-                  description: >
-                    Summary of infrastructure scoring by tier (e.g., Excellent, Advanced, Standard, Obsolete).
+                  description: Summary of infrastructure scoring (e.g., Excellent, Obsolete)
                   example: "Excellent: 20%, Advanced: 40%, Standard: 30%, Obsolete: 10%"
                 recommendations:
                   type: string
-                  description: >
-                    Summary of modernization recommendations including cloud migration, hardware refreshes,
-                    or workload redistribution.
+                  description: Summary of modernization actions (cloud migration, refresh, etc.)
                   example: "Decommission Tier 1 servers and migrate Tier 2 workloads to Azure."
                 key_findings:
                   type: string
-                  description: >
-                    Optional business-level observations for executive awareness (e.g., security risks, SLA violations, compliance gaps).
-                  example: "Several critical systems run on unsupported platforms, posing business continuity risks."
+                  description: Optional business-level observations (SLA risks, legacy exposure)
+                  example: "Several critical systems run on unsupported platforms, posing risks."
               required:
                 - session_id
                 - score_summary
                 - recommendations
-
       responses:
         "200":
           description: URLs to the generated DOCX and PPTX files
@@ -66,14 +57,13 @@ paths:
                 properties:
                   docx_url:
                     type: string
-                    description: Public URL of the generated Word report
+                    description: Public URL of the generated DOCX report
                     example: https://docx-generator-api.onrender.com/files/Temp_20250522_user_example_com/IT_Current_Status_Assessment_Report.docx
                   pptx_url:
                     type: string
                     description: Public URL of the generated PowerPoint summary
                     example: https://docx-generator-api.onrender.com/files/Temp_20250522_user_example_com/IT_Current_Status_Executive_Report.pptx
-
         "400":
-          description: Missing or invalid input parameters
+          description: Missing or invalid input
         "500":
-          description: Internal error generating reports
+          description: Internal error while generating reports
