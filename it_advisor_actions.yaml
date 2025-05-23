@@ -59,6 +59,11 @@ paths:
               properties:
                 session_id:
                   type: string
+                email:
+                  type: string
+              required:
+                - session_id
+                - email
       responses:
         "200":
           description: Assessment successfully triggered
