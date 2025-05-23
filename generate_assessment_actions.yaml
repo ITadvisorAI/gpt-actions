@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Generate IT Assessment Reports
-  version: 1.5.2
+  version: 1.5.3
   description: >
     Generates DOCX and PPTX reports for an IT session based on scoring, findings, and recommendations.
 
@@ -12,14 +12,11 @@ paths:
   /generate_assessment:
     post:
       operationId: generateAssessmentReports
-      summary: Generate DOCX and PPTX reports from assessment data
+      summary: Generate DOCX and PPTX from assessment results
       description: >
-        Produces two deliverables for an IT session:
+        Creates two outputs for an IT session: a detailed Word document and a PowerPoint presentation.
+        All files are stored under a folder named after the session_id.
 
-        1. A DOCX report with detailed infrastructure assessment.
-        2. A PPTX presentation summarizing insights and recommendations.
-
-        Files are stored in a session-specific folder.
       requestBody:
         required: true
         content:
@@ -47,9 +44,10 @@ paths:
                 - session_id
                 - score_summary
                 - recommendations
+
       responses:
         "200":
-          description: URLs to the generated DOCX and PPTX files
+          description: Report generation successful
           content:
             application/json:
               schema:
@@ -63,7 +61,9 @@ paths:
                     type: string
                     description: Public URL of the generated PowerPoint summary
                     example: https://docx-generator-api.onrender.com/files/Temp_20250522_user_example_com/IT_Current_Status_Executive_Report.pptx
+
         "400":
-          description: Missing or invalid input
+          description: Invalid input (missing fields or wrong format)
+
         "500":
-          description: Internal error while generating reports
+          description: Internal server error during report generation
