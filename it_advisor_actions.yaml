@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: GPT Orchestration API - IT Advisor
-  version: 1.2.0
+  version: 1.2.1
 
 servers:
   - url: https://gpt1-proxy.onrender.com
@@ -10,7 +10,7 @@ paths:
   /start_analysis:
     post:
       operationId: startAnalysis
-      summary: Initiates intake session and creates Drive folder
+      summary: Initializes a new transformation session and creates a Google Drive folder
       requestBody:
         required: true
         content:
@@ -21,16 +21,23 @@ paths:
                 email:
                   type: string
                   format: email
+                  description: Email address of the user starting the session
+                  example: user@example.com
                 goal:
                   type: string
+                  description: Free-text goal or purpose for the transformation
+                  example: transformation plan
+              required:
+                - email
+                - goal
       responses:
         "200":
-          description: Session created
+          description: Session successfully initialized
 
   /list_files:
     post:
       operationId: listFiles
-      summary: Lists all files uploaded for a session
+      summary: Retrieves the list of uploaded files for a session
       requestBody:
         required: true
         content:
@@ -40,31 +47,47 @@ paths:
               properties:
                 session_id:
                   type: string
+                  description: Unique session ID (e.g., Temp_20250522_user@example.com)
+                  example: Temp_20250522_user@example.com
                 email:
                   type: string
-      responses:
-        "200":
-          description: File list returned
-
-  /trigger_assessment:
-    post:
-      operationId: triggerAssessment
-      summary: Triggers GPT2 to begin infrastructure assessment (manual confirmation required)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                email:
-                  type: string
+                  format: email
+                  description: Email address linked to the session
+                  example: user@example.com
               required:
                 - session_id
                 - email
       responses:
         "200":
-          description: Assessment successfully triggered
+          description: Successfully retrieved uploaded file list
 
+  /trigger_assessment:
+    post:
+      operationId: triggerAssessment
+      summary: Sends session data and files to GPT2 (IT Assessment) to begin infrastructure evaluation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                session_id:
+                  type: string
+                  description: ID of the session to be assessed
+                  example: Temp_20250522_user@example.com
+                email:
+                  type: string
+                  format: email
+                  description: Email associated with the session
+                  example: user@example.com
+              required:
+                - session_id
+                - email
+      responses:
+        "200":
+          description: Assessment request sent to GPT2
+        "400":
+          description: Invalid or missing fields in the request
+        "500":
+          description: Internal error during GPT2 forwarding
