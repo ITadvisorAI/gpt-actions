@@ -12,7 +12,7 @@ servers:
 paths:
   /start_assessment:
     post:
-      operationId: startITAssessment
+      operationId: startAssessment
       summary: Start IT Assessment module
       description: >
         Receives session metadata and uploaded infrastructure files,
