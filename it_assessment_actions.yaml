@@ -10,9 +10,9 @@ servers:
   - url: https://it-assessment-api.onrender.com
 
 paths:
-  /start_assessment:
+  /process_assessment:
     post:
-      operationId: startAssessment
+      operationId: ProcessAssessment
       summary: Start IT Assessment processing
       description: >
         Receives session metadata and infrastructure files from GPT1 and
