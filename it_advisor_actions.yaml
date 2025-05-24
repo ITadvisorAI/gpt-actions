@@ -61,9 +61,9 @@ paths:
         "200":
           description: Successfully retrieved uploaded file list
 
-  /trigger_assessment:
+  /start_assessment:
     post:
-      operationId: triggerAssessment
+      operationId: StartAssessment
       summary: Sends session data and files to GPT2 (IT Assessment) to begin infrastructure evaluation
       requestBody:
         required: true
