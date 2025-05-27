@@ -1,130 +1,60 @@
 openapi: 3.1.0
 info:
-  title: GPT Orchestration API
-  version: 1.0.1
+  title: IT Strategy API
+  version: 1.0.0
+  description: |
+    API to generate IT Infrastructure Upgrade Strategy and Executive Report
+    based on the current HW/SW state and market GAP data.
 
 servers:
-  - url: https://gpt-api-server-7wu8.onrender.com
+  - url: https://it-strategy-api.onrender.com
 
 paths:
-  /receive_request:
+  /start_it_strategy:
     post:
-      operationId: receiveGPTRequest
-      summary: Trigger a GPT module task
+      summary: Start IT Infrastructure Strategy Generation
+      operationId: startITStrategy
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - session_id
+                - email
+                - files
               properties:
                 session_id:
                   type: string
+                  description: Unique session ID (e.g., Temp_YYYYMMDD_email)
+                email:
+                  type: string
+                  description: User's email address
                 gpt_module:
                   type: string
-                   enum: [it_advisor, it_assessment, gap_market, it_strategy, gap_target, it_compliance, roadmap, it_financials]
+                  description: Module name ("it_strategy")
+                status:
+                  type: string
+                  description: Processing status (e.g., "complete")
                 files:
                   type: array
+                  description: List of files received from the previous GPT
                   items:
                     type: object
+                    required:
+                      - file_name
+                      - file_url
+                      - file_type
                     properties:
                       file_name:
                         type: string
                       file_url:
                         type: string
-                    required:
-                      - file_name
-                      - file_url
-                source:
-                  type: string
-                next_action_webhook:
-                  type: string
-              required:
-                - session_id
-                - gpt_module
-                - files
-                - next_action_webhook
+                      file_type:
+                        type: string
       responses:
         "200":
-          description: GPT request received
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /send_result:
-    post:
-      operationId: sendGPTResult
-      summary: Submit GPT module result
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                gpt_module:
-                  type: string
-                  enum: [gap_market, assessment, strategy, gap_target, compliance, roadmap, financials]
-                file_name:
-                  type: string
-                file_url:
-                  type: string
-                file_2_name:
-                  type: string
-                file_2_url:
-                  type: string
-                status:
-                  type: string
-              required:
-                - session_id
-                - gpt_module
-                - file_name
-                - file_url
-                - status
-      responses:
-        "200":
-          description: GPT result posted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /notify_zip_delivery:
-    post:
-      operationId: notifyZipDelivery
-      summary: Notify user of ZIP delivery and end of session
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                session_id:
-                  type: string
-                zip_url:
-                  type: string
-              required:
-                - session_id
-                - zip_url
-      responses:
-        "200":
-          description: ZIP delivery notification sent
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: >-
-                      Please find the link to download your IT Transformation reports. This session has now ended and the Google Drive along with all the reports that you uploaded and were generated have been deleted. A copy of this zipped file has been emailed to you also. In case you have any questions on the reports, request you to please upload the report files in this chat for me to review and provide insights.
+          description: IT Strategy generation started successfully
+        "500":
+          description: Internal server error
