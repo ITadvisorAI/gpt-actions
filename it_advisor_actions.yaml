@@ -50,7 +50,7 @@ paths:
   /user_message:
     post:
       summary: Watch for upload confirmation to trigger assessment
-      operationId: trigger_assessment
+      operationId: start_assessment
       requestBody:
         required: true
         content:
