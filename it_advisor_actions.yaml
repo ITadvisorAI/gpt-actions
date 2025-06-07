@@ -4,6 +4,7 @@ info:
   version: 1.0.0
 servers:
   - url: https://gpt1-proxy.onrender.com
+
 paths:
   /start_analysis:
     post:
@@ -20,9 +21,7 @@ paths:
                   type: string
                 goal:
                   type: string
-              required:
-                - email
-                - goal
+              required: [email, goal]
       responses:
         '200':
           description: Session created
@@ -42,9 +41,7 @@ paths:
                   type: string
                 email:
                   type: string
-              required:
-                - session_id
-                - email
+              required: [session_id, email]
       responses:
         '200':
           description: File list returned
@@ -52,7 +49,7 @@ paths:
   /user_message:
     post:
       summary: Watch for upload confirmation to trigger assessment
-      operationId: start_assessment
+      operationId: trigger_assessment
       requestBody:
         required: true
         content:
@@ -64,9 +61,7 @@ paths:
                   type: string
                 message:
                   type: string
-              required:
-                - session_id
-                - message
+              required: [session_id, message]
       responses:
         '200':
           description: Assessment triggered or waiting
