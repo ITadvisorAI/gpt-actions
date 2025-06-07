@@ -59,7 +59,7 @@ paths:
                 next_action_webhook:
                   type: string
                   format: uri
-              required: [session_id, email, files, next_action_webhook]
+              required: [session_id, email, goal, files, next_action_webhook]
       responses:
         '200':
           description: Assessment initiated
