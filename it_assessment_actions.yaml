@@ -4,8 +4,8 @@ info:
   version: 2.0.0
   description: >
     API for receiving IT assessment requests from GPT1, analyzing uploaded infrastructure files,
-    performing GAP analysis, classification, scoring, chart generation, and forwarding detailed assessment output
-    (DOCX, PPTX, XLSX) to the next GPT module (e.g., Market GAP Analysis).
+    performing GAP analysis, classification, scoring, chart generation, and forwarding detailed 
+    assessment output (DOCX, PPTX, XLSX) to the next GPT module (e.g., Market GAP Analysis).
 
 servers:
   - url: https://it-assessment-api.onrender.com
@@ -16,10 +16,9 @@ paths:
       operationId: startAssessment
       summary: Trigger IT Assessment Analysis
       description: >
-        Receives a session payload including uploaded infrastructure files,
-        begins asynchronous GAP analysis using classification models and templates,
-        and generates reports before forwarding results to the next module.
-
+        Receives a session payload including uploaded infrastructure files, begins asynchronous 
+        GAP analysis using classification models and templates, and generates reports before 
+        forwarding results to the next module.
       requestBody:
         required: true
         content:
@@ -51,32 +50,18 @@ paths:
                         format: uri
                       type:
                         type: string
-                        enum:
-                          - asset_inventory
-                          - gap_working
-                          - intake
-                          - log
-                          - capacity_plan
-                          - compliance_report
-                          - firewall_rules
-                          - backup_schedule
-                          - strategy_input
-                          - general
-                    required:
-                      - file_name
-                      - file_url
-                      - type
+                        enum: [
+                          asset_inventory, gap_working, intake, log,
+                          capacity_plan, compliance_report, firewall_rules,
+                          backup_schedule, strategy_input, general
+                        ]
+                    required: [file_name, file_url, type]
                 next_action_webhook:
                   type: string
                   format: uri
-              required:
-                - session_id
-                - email
-                - files
-                - next_action_webhook
-
+              required: [session_id, email, files, next_action_webhook]
       responses:
-        "200":
+        '200':
           description: Assessment initiated
           content:
             application/json:
@@ -91,8 +76,7 @@ paths:
     get:
       operationId: serveGeneratedFile
       summary: Access Generated Assessment File
-      description: >
-        Returns generated XLSX, DOCX, or PPTX files for download by filename.
+      description: Returns generated XLSX, DOCX, or PPTX files for download by filename.
       parameters:
         - name: filename
           in: path
@@ -100,9 +84,9 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: File successfully returned
-        "404":
+        '404':
           description: File not found
 
   /send_result:
@@ -110,9 +94,8 @@ paths:
       operationId: sendResultToNextModule
       summary: Send Final Assessment Results
       description: >
-        POSTs the final generated report files (HW/SW GAP XLSX, DOCX, PPTX)
-        to the next GPT module as part of the transformation chain.
-
+        POSTs the final generated report files (HW/SW GAP XLSX, DOCX, PPTX) to the next GPT 
+        module as part of the transformation chain.
       requestBody:
         required: true
         content:
@@ -150,23 +133,16 @@ paths:
                 file_4_url:
                   type: string
                   format: uri
-              required:
-                - session_id
-                - gpt_module
-                - status
-                - file_1_name
-                - file_1_url
-
+              required: [session_id, gpt_module, status, file_1_name, file_1_url]
       responses:
-        "200":
+        '200':
           description: Output accepted by next module
 
   /notify_zip_delivery:
     post:
       operationId: notifyZipDelivery
       summary: Final ZIP Notification
-      description: >
-        Endpoint for Summarizer GPT to notify ZIP delivery and session completion.
+      description: Endpoint for Summarizer GPT to notify ZIP delivery and session completion.
       requestBody:
         required: true
         content:
@@ -179,9 +155,7 @@ paths:
                 zip_url:
                   type: string
                   format: uri
-              required:
-                - session_id
-                - zip_url
+              required: [session_id, zip_url]
       responses:
-        "200":
+        '200':
           description: Delivery acknowledged
