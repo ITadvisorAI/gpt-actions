@@ -2,12 +2,9 @@ openapi: 3.1.0
 info:
   title: Privacy policy
   version: 1.0.0
-servers:
-  - url: https://gpt1-proxy.onrender.com
 
 servers:
-  - url: "https://api.openai.com/v1"
-    description: "OpenAI API endpoint"
+  - url: https://gpt1-proxy.onrender.com
 
 privacy_policy:
   effective_date: "2025-05-01"
