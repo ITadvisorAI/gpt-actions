@@ -1,5 +1,9 @@
 # privacy_policy.yaml
-openapi: 3.1.0
+
+servers:
+  - url: "https://api.openai.com/v1"
+    description: "OpenAI API endpoint"
+
 privacy_policy:
   effective_date: "2025-05-01"
   details: |
