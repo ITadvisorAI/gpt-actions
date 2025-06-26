@@ -1,4 +1,9 @@
-# privacy_policy.yaml
+openapi: 3.1.0
+info:
+  title: Privacy policy
+  version: 1.0.0
+servers:
+  - url: https://gpt1-proxy.onrender.com
 
 servers:
   - url: "https://api.openai.com/v1"
