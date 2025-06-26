@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: https://gpt1-proxy.onrender.com/privacy
+  - url: https://privacy-z0u7.onrender.com/privacy.yaml
 
 privacy_policy:
   effective_date: "2025-05-01"
